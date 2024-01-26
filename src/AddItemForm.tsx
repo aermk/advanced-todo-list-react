@@ -1,5 +1,6 @@
 import React, { ChangeEvent, useState } from "react";
 import "./App.css";
+import { Button, TextField } from "@mui/material";
 
 type PropsType = {
   addItem(task: string): void;
@@ -23,6 +24,7 @@ export function AddItemForm(props: PropsType) {
   };
 
   const onKeyDownHandler = (e: any) => {
+    setError(null);
     if (e.charCode === 13) {
       addTask();
     }
@@ -30,14 +32,18 @@ export function AddItemForm(props: PropsType) {
 
   return (
     <div>
-      <input
+      <TextField
+        variant='outlined'
+        label='Type value'
         value={title}
         onChange={onChangeHandler}
         onKeyDown={onKeyDownHandler}
-        className={error ? "error" : ""}
-      ></input>
-      <button onClick={addTask}>+</button>
-      {error && <div className='error-message'>{error}</div>}
+        error={!!error} //????
+        helperText={error}
+      ></TextField>
+      <Button onClick={addTask} variant='contained' color='primary'>
+        +
+      </Button>
     </div>
   );
 }

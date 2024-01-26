@@ -3,6 +3,8 @@ import "./App.css";
 import { FilterValuesType } from "./App";
 import AddItemForm from "./AddItemForm";
 import EditableSpan from "./EditableSpan";
+import { Button, IconButton } from "@mui/material";
+import { Delete } from "@mui/icons-material";
 
 export type TaskType = {
   id: string;
@@ -60,7 +62,9 @@ export function Todolist(props: PropsType) {
           title={props.title}
           onChange={changeTodoListTitle}
         ></EditableSpan>
-        <button onClick={removeTodoList}>x</button>
+        <IconButton onClick={removeTodoList}>
+          <Delete />
+        </IconButton>
       </h3>
 
       <AddItemForm addItem={addTask} />
@@ -92,32 +96,35 @@ export function Todolist(props: PropsType) {
                   title={task.title}
                   onChange={onChangeTitleHandler}
                 />
-                <button onClick={() => props.removeTask(task.id, props.id)}>
-                  x
-                </button>
+                <IconButton onClick={() => props.removeTask(task.id, props.id)}>
+                  <Delete />
+                </IconButton>
               </li>
             );
           })}
       </ul>
       <div>
-        <button
-          className={props.filter === "all" ? "active-filter" : ""}
+        <Button
+          variant={props.filter === "all" ? "outlined" : "text"}
+          // className={props.filter === "all" ? "active-filter" : ""} // fix class
           onClick={onClickAllButton}
         >
           All
-        </button>
-        <button
-          className={props.filter === "active" ? "active-filter" : ""}
+        </Button>
+        <Button
+          // className={props.filter === "active" ? "active-filter" : ""} // fix class
+          variant={props.filter === "active" ? "outlined" : "text"}
           onClick={onClickActiveButton}
         >
           Active
-        </button>
-        <button
+        </Button>
+        <Button
           onClick={onClickComplitedButton}
-          className={props.filter === "completed" ? "active-filter" : ""}
+          // className={props.filter === "completed" ? "active-filter" : ""} // fix class
+          variant={props.filter === "completed" ? "outlined" : "text"}
         >
           Completed
-        </button>
+        </Button>
       </div>
     </div>
   );
