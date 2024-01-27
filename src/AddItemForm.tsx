@@ -1,6 +1,7 @@
 import React, { ChangeEvent, useState } from "react";
 import "./App.css";
-import { Button, TextField } from "@mui/material";
+import { Button, IconButton, TextField } from "@mui/material";
+import { Add } from "@mui/icons-material";
 
 type PropsType = {
   addItem(task: string): void;
@@ -41,9 +42,9 @@ export function AddItemForm(props: PropsType) {
         error={!!error} //????
         helperText={error}
       ></TextField>
-      <Button onClick={addTask} variant='contained' color='primary'>
-        +
-      </Button>
+      <IconButton onClick={addTask} color='primary'>
+        <Add />
+      </IconButton>
     </div>
   );
 }

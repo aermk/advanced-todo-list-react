@@ -3,7 +3,7 @@ import "./App.css";
 import { FilterValuesType } from "./App";
 import AddItemForm from "./AddItemForm";
 import EditableSpan from "./EditableSpan";
-import { Button, IconButton } from "@mui/material";
+import { Button, Checkbox, IconButton } from "@mui/material";
 import { Delete } from "@mui/icons-material";
 
 export type TaskType = {
@@ -69,7 +69,7 @@ export function Todolist(props: PropsType) {
 
       <AddItemForm addItem={addTask} />
 
-      <ul>
+      <div>
         {props.tasks &&
           props.tasks.map((task, index) => {
             const onChangeStatusHandler = (
@@ -86,9 +86,8 @@ export function Todolist(props: PropsType) {
               props.changeTaskTitle(task.id, newValue, props.id);
             };
             return (
-              <li key={index}>
-                <input
-                  type='checkbox'
+              <div key={index}>
+                <Checkbox
                   checked={task.isDone}
                   onChange={onChangeStatusHandler}
                 />
@@ -99,20 +98,18 @@ export function Todolist(props: PropsType) {
                 <IconButton onClick={() => props.removeTask(task.id, props.id)}>
                   <Delete />
                 </IconButton>
-              </li>
+              </div>
             );
           })}
-      </ul>
+      </div>
       <div>
         <Button
           variant={props.filter === "all" ? "outlined" : "text"}
-          // className={props.filter === "all" ? "active-filter" : ""} // fix class
           onClick={onClickAllButton}
         >
           All
         </Button>
         <Button
-          // className={props.filter === "active" ? "active-filter" : ""} // fix class
           variant={props.filter === "active" ? "outlined" : "text"}
           onClick={onClickActiveButton}
         >
@@ -120,7 +117,6 @@ export function Todolist(props: PropsType) {
         </Button>
         <Button
           onClick={onClickComplitedButton}
-          // className={props.filter === "completed" ? "active-filter" : ""} // fix class
           variant={props.filter === "completed" ? "outlined" : "text"}
         >
           Completed
