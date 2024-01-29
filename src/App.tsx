@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect, useState } from "react";
+import React, { useState } from "react";
 import { v1 } from "uuid";
 import "./App.css";
 import Todolist, { TaskType } from "./Todolist";
@@ -22,7 +22,7 @@ export type TodoListType = {
   filter: FilterValuesType;
 };
 
-type TaskStateType = {
+export type TaskStateType = {
   [key: string]: Array<TaskType>;
 };
 

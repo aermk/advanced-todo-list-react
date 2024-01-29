@@ -1,4 +1,4 @@
-import React, { useState, ChangeEvent } from "react";
+import React, { ChangeEvent } from "react";
 import "./App.css";
 import { FilterValuesType } from "./App";
 import AddItemForm from "./AddItemForm";
