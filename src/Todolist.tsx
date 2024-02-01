@@ -1,10 +1,18 @@
 import React, { ChangeEvent } from "react";
 import "./App.css";
-import { FilterValuesType } from "./App";
+import { FilterValuesType } from "./AppWithRedux";
 import AddItemForm from "./AddItemForm";
 import EditableSpan from "./EditableSpan";
 import { Button, Checkbox, IconButton } from "@mui/material";
 import { Delete } from "@mui/icons-material";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  addTaskAC,
+  changeTaskStatusAC,
+  changeTaskTitleAC,
+  removeTaskAC,
+} from "./state/tasks-reducer";
+import { AppRootState } from "./state/store";
 
 export type TaskType = {
   id: string;
@@ -15,32 +23,31 @@ export type TaskType = {
 type PropsType = {
   id: string;
   title: string;
-  tasks?: TaskType[];
-  removeTask(id: string, todoListId: string): void;
-  changeFilter(
-    value: FilterValuesType,
-    todoListId: string,
-    tasks?: TaskType[]
-  ): void;
-  addTask(task: string, todoListId: string): void;
+  changeFilter(value: FilterValuesType, todoListId: string): void;
   filter: FilterValuesType;
-  changeTaskStatus(taskId: string, isDone: boolean, todolistId: string): void;
-  changeTaskTitle(taskId: string, newTitle: string, todolistId: string): void;
   removeTodoList(todoListId: string): void;
   changeTodoListTitle(todoListId: string, newTitle: string): void;
 };
 
 export function Todolist(props: PropsType) {
+  const dispatch = useDispatch();
+
+  const tasks = useSelector<AppRootState, TaskType[]>(
+    (state) => state.tasks[props.id]
+  );
+
+  console.log("tasks", tasks);
+
   const onClickAllButton = (): void => {
-    props.changeFilter("all", props.id, props.tasks); ///???? tasks
+    props.changeFilter("all", props.id);
   };
 
   const onClickActiveButton = (): void => {
-    props.changeFilter("active", props.id, props.tasks); ///???? tasks
+    props.changeFilter("active", props.id);
   };
 
   const onClickComplitedButton = (): void => {
-    props.changeFilter("completed", props.id, props.tasks); ///???? tasks
+    props.changeFilter("completed", props.id);
   };
 
   const removeTodoList = () => {
@@ -51,9 +58,13 @@ export function Todolist(props: PropsType) {
     props.changeTodoListTitle(props.id, newTitle);
   };
 
-  const addTask = (title: string) => {
-    props.addTask(title, props.id);
-  };
+  let filteredList = tasks;
+  if (props.filter === "completed") {
+    filteredList = filteredList.filter((task) => task.isDone === true);
+  }
+  if (props.filter === "active") {
+    filteredList = filteredList.filter((task) => task.isDone === false);
+  }
 
   return (
     <div>
@@ -67,23 +78,21 @@ export function Todolist(props: PropsType) {
         </IconButton>
       </h3>
 
-      <AddItemForm addItem={addTask} />
+      <AddItemForm addItem={(title) => dispatch(addTaskAC(title, props.id))} />
 
       <div>
-        {props.tasks &&
-          props.tasks.map((task, index) => {
+        {filteredList &&
+          filteredList.map((task, index) => {
             const onChangeStatusHandler = (
               e: ChangeEvent<HTMLInputElement>
             ) => {
-              props.changeTaskStatus(
-                task.id,
-                e.currentTarget.checked,
-                props.id
+              dispatch(
+                changeTaskStatusAC(task.id, e.currentTarget.checked, props.id)
               );
             };
 
             const onChangeTitleHandler = (newValue: string) => {
-              props.changeTaskTitle(task.id, newValue, props.id);
+              dispatch(changeTaskTitleAC(task.id, newValue, props.id));
             };
             return (
               <div key={index}>
@@ -95,7 +104,9 @@ export function Todolist(props: PropsType) {
                   title={task.title}
                   onChange={onChangeTitleHandler}
                 />
-                <IconButton onClick={() => props.removeTask(task.id, props.id)}>
+                <IconButton
+                  onClick={() => dispatch(removeTaskAC(task.id, props.id))}
+                >
                   <Delete />
                 </IconButton>
               </div>

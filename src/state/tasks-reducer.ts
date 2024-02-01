@@ -1,8 +1,10 @@
 import { v1 } from "uuid";
-import { TaskStateType } from "../App";
+import { TaskStateType } from "../AppWithRedux";
 import {
   AddTodolistActionType,
   RemoveTodolistActionType,
+  todolistId1,
+  todolistId2,
 } from "./todolists-reducer";
 
 export type RemoveTaskActionType = {
@@ -39,8 +41,22 @@ export type ActionsType =
   | AddTodolistActionType
   | RemoveTodolistActionType;
 
+const initialState: TaskStateType = {
+  [todolistId1]: [
+    // [todolistId1] тк используем v1
+    { id: v1(), title: "html", isDone: false },
+    { id: v1(), title: "css", isDone: true },
+    { id: v1(), title: "react", isDone: false },
+    { id: v1(), title: "mobx", isDone: true },
+  ],
+  [todolistId2]: [
+    { id: v1(), title: "banana", isDone: false },
+    { id: v1(), title: "milk", isDone: true },
+  ],
+};
+
 export const tasksReducer = (
-  state: TaskStateType,
+  state: TaskStateType = initialState,
   action: ActionsType
 ): TaskStateType => {
   switch (action.type) {
@@ -62,19 +78,17 @@ export const tasksReducer = (
     case "CHANGE-TASK-STATUS": {
       const stateCopy = { ...state };
       const tasks = stateCopy[action.todolistId];
-      let task = tasks.find((t) => t.id === action.taskId);
-      if (task) {
-        task.isDone = action.isDone;
-      }
+      stateCopy[action.todolistId] = tasks.map((task) =>
+        task.id === action.taskId ? { ...task, isDone: action.isDone } : task
+      );
       return stateCopy;
     }
     case "CHANGE-TASK-TITLE": {
       const stateCopy = { ...state };
       const tasks = stateCopy[action.todolistId];
-      let task = tasks.find((t) => t.id === action.taskId);
-      if (task) {
-        task.title = action.title;
-      }
+      stateCopy[action.todolistId] = tasks.map((task) =>
+        task.id === action.taskId ? { ...task, title: action.title } : task
+      );
       return stateCopy;
     }
     case "ADD-TODOLIST": {
@@ -89,8 +103,8 @@ export const tasksReducer = (
     }
 
     default:
-      throw new Error("Undefined action type");
-    // return state;
+      // throw new Error("Undefined action type");
+      return state;
   }
 };
 
